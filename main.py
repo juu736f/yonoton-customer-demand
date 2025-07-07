@@ -33,12 +33,22 @@ def plot_payments_per_hour(df, date):
     hourly = day_df.groupby('hour')['amountInEuros'].sum()
 
     plt.figure(figsize=(10, 6))
-    hourly.plot(kind='bar', color='skyblue')
+    ax = hourly.plot(kind='bar', color='skyblue')
     plt.title(f"Payments Captured per Hour ({date.strftime('%d.%m.%Y')})")
     plt.xlabel("Hour")
     plt.ylabel("Total Payments (€)")
     plt.xticks(rotation=0)
     plt.tight_layout()
+
+    daily_total = hourly.sum()
+    plt.text(
+        0.99, 0.01,
+        f"Total: €{daily_total:,.2f}",
+        ha='right', va='bottom',
+        transform=ax.transAxes,
+        fontsize=12, fontweight='bold',
+        bbox=dict(facecolor='white', alpha=0.7, edgecolor='none')
+    )
 
     plt.savefig(filename)
     plt.close()
