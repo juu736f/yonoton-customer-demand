@@ -41,6 +41,16 @@ def plot_payments_per_hour(df, date):
     plt.tight_layout()
 
     daily_total = hourly.sum()
+    daily_avg = day_df['amountInEuros'].mean()
+
+    plt.text(
+        0.99, 0.06,
+        f"Average: €{daily_avg:,.2f}",
+        ha='right', va='bottom',
+        transform=ax.transAxes,
+        fontsize=11, fontweight='normal',
+        bbox=dict(facecolor='white', alpha=0.7, edgecolor='none')
+    )
     plt.text(
         0.99, 0.01,
         f"Total: €{daily_total:,.2f}",
