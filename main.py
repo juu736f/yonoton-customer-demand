@@ -11,6 +11,10 @@ def load_data(file_path):
     df = pd.read_excel(file_path, dtype={'creationDate': str, 'capturingTime': str})
     df['creationDate'] = df['creationDate'].astype(str).str.strip("'").str.strip()
     df['capturingTime'] = df['capturingTime'].astype(str).str.strip()
+    # Ensure capturingTime always has milliseconds
+    df['capturingTime'] = df['capturingTime'].str.replace(
+        r'^(\d{2}:\d{2}:\d{2})$', r'\1.000', regex=True
+    )
     df['capturingDateTime'] = pd.to_datetime(df['creationDate'] + ' ' + df['capturingTime'], errors='coerce')
     df['creationDate'] = pd.to_datetime(df['creationDate'], errors='coerce')
     df['amountInEuros'] = df['amountIncludingTipInCents'] / 100
@@ -42,6 +46,21 @@ def plot_payments_per_hour(df, date):
 
     daily_total = hourly.sum()
     daily_avg = day_df['amountInEuros'].mean()
+
+    # Payment method totals
+    method_totals = day_df.groupby('methodCode')['amountInEuros'].sum()
+    method_text = "\n".join(
+        f"{method}: €{amount:,.2f}" for method, amount in method_totals.items()
+    )
+
+    plt.text(
+        0.01, 0.01,
+        method_text,
+        ha='left', va='bottom',
+        transform=ax.transAxes,
+        fontsize=11, fontweight='normal',
+        bbox=dict(facecolor='white', alpha=0.7, edgecolor='none')
+    )
 
     plt.text(
         0.99, 0.06,

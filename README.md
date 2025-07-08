@@ -9,6 +9,10 @@ This Python script generates hourly customer demand graphs from a `payments_capt
 - Produces bar chart images per date.
 - Skips already processed dates.
 
+## Example Output
+
+![Example output](img/demo_demand.png)
+
 ## Requirements
 
 - Python 3.8+
