@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog
+from tkinter import messagebox
 
 OUTPUT_DIR = Path("customer-demand-graphs")
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -24,12 +25,12 @@ def plot_payments_per_hour(df, date):
     # Use Windows-compatible format codes
     filename = OUTPUT_DIR / f"{date.strftime('%#d.%#m.%Y')}_demand.png"
     if filename.exists():
-        print(f"Skipping {filename} (already exists)")
+        messagebox.showinfo("Skipping", f"File {filename} already exists...")
         return
 
     day_df = df[df['creationDate'].dt.date == date]
     if day_df.empty:
-        print(f"No data for {date}")
+        messagebox.showinfo("No Data", f"No data for {date}.")
         return
 
     day_df = day_df.copy()
@@ -81,7 +82,8 @@ def plot_payments_per_hour(df, date):
 
     plt.savefig(filename)
     plt.close()
-    print(f"Saved {filename}")
+    messagebox.showinfo("Success", f"Chart saved to:\n{filename}")
+
 
 def main():
     root = tk.Tk()
@@ -91,7 +93,7 @@ def main():
         filetypes=[("Excel files", "*.xlsx")]
     )
     if not file_path:
-        print("No file selected.")
+        messagebox.showinfo("Error", "No file selected.")
         return
 
     df = load_data(file_path)
